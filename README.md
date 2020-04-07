@@ -4,12 +4,12 @@ This repo contains an implimentation of CVPR 2020 paper:
 
 **DualSDF: Semantic Shape Manipulation using a Two-Level Representation**,
 
-by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
+by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**. 
+[[Paper]](https://arxiv.org/pdf/2004.02869.pdf):
 
 ## Citing DualSDF
 
-If you find our code useful, please consider citing our 
-[[Paper]](https://arxiv.org/pdf/2004.02869.pdf):
+If you find our code useful, please consider citing our paper:
 
 ```
 @article{zekun2020dualsdf,
