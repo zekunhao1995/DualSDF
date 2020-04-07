@@ -27,4 +27,4 @@ If you find our code useful, please consider citing our paper:
     <img src="dualsdf_demo_snap.png"/>
 </p>
 
-## Code coming soon
+## Code for training & demo coming soon
