@@ -1,6 +1,6 @@
 # DualSDF
 
-This repo contains an implimentation of CVPR 2020 paper:
+This repo contains an implimentation of the CVPR 2020 paper:
 
 **DualSDF: Semantic Shape Manipulation using a Two-Level Representation**,
 
