@@ -23,5 +23,5 @@ If you find our code useful, please consider citing our paper:
 
 ## Code coming soon
 <p float="left">
-    <img src="dualsdf_demo_snap.png" height="521"/>
+    <img src="dualsdf_demo_snap.png"/>
 </p>
