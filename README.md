@@ -133,5 +133,6 @@ To render shape reconstruction results on the training set, run the following co
 ```bash
 python3.6 train.py ./config/dualsdf_airplanes_demo.yaml --resume --pretrained ./pretrained/dualsdf_airplanes_demo/epoch_2799.pth --special render_known_shapes
 ```
-The rendered images of both primitive-based representation and high-resolution representation will appear under the `logs/special_render_known_shapes_dualsdf_airplanes_demo_<datetime>` directory. Many options related to rendering can be modified in the config file.
+The rendered images of both primitive-based representation and high-resolution representation will appear under the `logs/special_render_known_shapes_dualsdf_airplanes_demo_<datetime>` directory.   
+A comprehensive set of options related to rendering, such as resolution, color scheme, etc. can be modified in the config file.
 
