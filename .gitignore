@@ -1,0 +1,6 @@
+*__pycache__
+*.pyc
+*.o
+*.so
+extensions/mesh2sdf2_cuda/build/
+logs/

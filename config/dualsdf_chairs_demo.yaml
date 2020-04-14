@@ -1,0 +1,187 @@
+resume:
+    dir:
+    
+data:
+    type: datasets.shapenetv2_newsdf_dataset
+    cate_id: "03001627" # Chair
+    split_files:
+        train: ./datasets/splits/sv2_chairs_all.json
+        test: ./datasets/splits/sv2_chairs_all.json
+    sdf_data_dir:
+        surface: /mnt/data3/ShapeNet_sdf_even/03001627_surface
+        sphere: /mnt/data3/ShapeNet_sdf_even/03001627_sphere
+    train:
+        num_sample_points:
+            fine: 2048
+            coarse: 1024
+        num_repeats: 1
+        batch_size: 64
+        num_workers: 4
+    test:
+        test_on_train_set: False
+        num_sample_points:
+            fine: 2048
+            coarse: 1024
+        num_repeats: 100
+        batch_size: 32
+        subset: 32
+        num_workers: 4
+
+trainer:
+    #type: trainers.dualsdf_trainer
+    type: trainers.demo_trainer
+    latent_dim: 128
+    latent_code:
+        type: VADLogVar
+        mu_init_std: # default: 1.0 / np.sqrt(self.dim)
+        #sigma_init_std: 
+        logvar_init_std: 
+        logvar_init_mean: 0.0
+        fix_var: False
+        augment_latent: True
+        sample_twice: True
+    detach_latent_coarse: True
+    detach_latent_fine: False
+    kld_weight: 1.e-5
+    attr_reg_weight: 0.001
+    optim_primitive:
+        type: Adam
+        lr: 5.e-4
+        betas: [0.9, 0.999]
+        eps: 1.e-8
+        weight_decay: 0
+        lr_scheduler:
+            type: Step
+            initial: 5.e-4
+            interval: 700 # epochs
+            factor: 0.5
+    optim_deepsdf:
+        type: Adam
+        lr: 5.e-4
+        betas: [0.9, 0.999]
+        eps: 1.e-8
+        weight_decay: 0
+        lr_scheduler:
+            type: Step
+            initial: 5.e-4
+            interval: 700
+            factor: 0.5
+    optim_latentcode:
+        type: Adam
+        lr: 5.e-1
+        betas: [0.9, 0.999]
+        eps: 1.e-8
+        weight_decay: 0
+        lr_scheduler:
+            type: Step
+            initial: 5.e-1
+            interval: 700
+            factor: 0.5
+    loss_fine:
+        type: clamped_l1_correct
+        trunc: 0.1
+        weight: 1.0
+    loss_coarse:
+        type: onesided_l2
+        weight: 1.0
+    mixture_loss: True # use proper mixture-of-experts loss instead of approximaton
+    epochs: 2800
+    
+viz:
+  log_interval: 1
+  save_interval: 50
+  
+render:
+    cam_model: 'Orthographic' # Perspective
+    #cam_model: 'Perspective'
+    bsphere_r: 1.1
+    ver_scale: 2.15
+    rot_hor_deg: 60
+    rot_ver_deg: -28.647889
+    sdf_iso_level: 0.001
+    sdf_clamp: 0.05
+    sdf_gain: 1
+    numerical_normal: False
+    resolution: [480, 480]
+    steps: 96
+    fg_color: [0.99609375, 0.89453125, 0.796875] # [255 / 256, 229 / 256, 204 / 256]
+    bg_color: [1.0, 1.0, 1.0]
+    selected_color: [0.0, 0.5843, 1.0]
+
+render_web:
+    cam_model: 'Orthographic'
+    bsphere_r: 1.1
+    ver_scale: 2.15
+    rot_hor_deg: 60
+    rot_ver_deg: -28.647889
+    sdf_iso_level: 0.001
+    #sdf_clamp: 0.05
+    sdf_clamp: 0.08
+    sdf_gain: 1
+    numerical_normal: False
+    resolution: [200, 200] # Lower resolution for web demo
+    steps: 64
+    fg_color: [0.99609375, 0.89453125, 0.796875] # [255 / 256, 229 / 256, 204 / 256]
+    bg_color: [1.0, 1.0, 1.0]
+    selected_color: [0.0, 0.5843, 1.0]
+    
+manip:
+    latent:
+        type: VADLogVar
+        mu_init_std: # default: 1.0 / np.sqrt(self.dim)
+        logvar_init_std: 
+        logvar_init_mean: 0.0
+        fix_var: False
+        augment_latent: False
+        sample_twice: False
+    optim:
+        type: Adam
+        lr: 1.e-1 # for VAD_logvar, one step per epoch
+        betas: [0.9, 0.999]
+        eps: 1.e-8
+        weight_decay: 0
+        
+val:
+    latent_code:
+        type: VADLogVar
+        mu_init_std: # default: 1.0 / np.sqrt(self.dim) 
+        logvar_init_std: 
+        logvar_init_mean: 0.0
+        fix_var: False
+        augment_latent: True
+        sample_twice: True
+    optim_latentcode:
+        type: Adam
+        lr: 5.e-1 # for AE
+        eps: 1.e-8
+        weight_decay: 0
+        lr_scheduler:
+            type: Step
+            initial: 5.e-1
+            interval: 2
+            factor: 0.5
+    epochs: 8
+
+models:
+    deepsdf:
+        type: models.deepsdf_mlp9
+        dropout: True
+        dropout_prob: 0.2
+        use_tanh: True
+        in_ch: 131 # 128 + 3
+        out_ch: 1
+        hidden_ch: 512
+    prim_attr:
+        type: models.deepsdf_mlp9
+        dropout: False
+        dropout_prob:
+        use_tanh: False
+        in_ch: 128
+        out_ch: 1024 # 4 * 256
+        hidden_ch: 512
+    prim_sdf:
+        type: models.sdfsphere
+        smooth: True
+        smooth_factor: 100
+        return_idx: False
+

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>DualSDF Demo</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<style>
+			body {
+				background-color: #f0f0f0;
+				color: #444;
+			}
+			a {
+				color: #08f;
+			}
+		</style>
+	</head>
+	<body>
+        <div style="position: absolute;">
+            <div id="highres" title="High-res">
+            High-res rendering:
+            <img id="highres_img" src="./placeholder.png" alt="High-res rendering" width="224" height="224">
+            </div>
+            <div id="auxinfo">Feature norm: <span id="kld"></span></div>
+        </div>
+		<div id="container"></div>
+		<div id="info">
+			<!--<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - DualSDF Demo <br />-->
+            <b>DualSDF: Semantic Shape Manipulation using a Two-Level Representation </b><br />
+            <a href="https://arxiv.org/abs/2004.02869" target="_blank" rel="noopener">[paper]</a> <a href="https://github.com/zekunhao1995/DualSDF" target="_blank" rel="noopener">[code]</a> <a href="http://www.cs.cornell.edu/~hadarelor/dualsdf/" target="_blank" rel="noopener">[website]</a> <br />
+            Move and scale the sphere primitives to customize your chair!  <br />
+            Check <b>toggleScale</b> to switch between scale and translation manipulation.  <br />
+            Press <b>getData</b> to sample a new random shape.  <br />
+            Adjust <b>Gamma</b> and <b>Beta</b> to change the strength of latent regularization.
+            <!--The X axis is red. The Y axis is green. The Z axis is blue. <br />-->
+		</div>
+		<script type="module">
+
+			import * as THREE from '../build/three.module.js';
+
+			//import Stats from './jsm/libs/stats.module.js';
+			import { GUI } from './jsm/libs/dat.gui.module.js';
+
+			import { DragControls } from './jsm/controls/DragControls.js';
+			import { OrbitControls } from './jsm/controls/OrbitControls.js';
+			import { TransformControls } from './jsm/controls/TransformControls.js';
+            
+			String.prototype.format = function () {
+
+				var str = this;
+
+				for ( var i = 0; i < arguments.length; i ++ ) {
+
+					str = str.replace( '{' + i + '}', arguments[ i ] );
+
+				}
+				return str;
+
+			};
+
+			var container; //, stats;
+			var camera, scene, renderer;
+			var splineHelperObjects = [];
+			var splinePointsLength = 4;
+			var positions = [];
+            var scales = [];
+			var point = new THREE.Vector3();
+
+            var metadata = {};
+			//var geometry = new THREE.BoxBufferGeometry( 20, 20, 20 );
+            var geometry = new THREE.SphereBufferGeometry( 1, 20, 20 );
+			var transformControl;
+
+			var ARC_SEGMENTS = 200;
+
+			var splines = {};
+
+			var params = {
+				//uniform: true,
+				//tension: 0.5,
+				//centripetal: true,
+				//chordal: true,
+				//addPoint: addPoint,
+				//removePoint: removePoint,
+				//exportSpline: exportSpline,
+                exportFeature: exportFeature,
+                loadFeature: loadFeature,
+                gamma: 0.02,
+                beta: 0.5,
+                getData: getData,
+                toggleScale: false
+			};
+            
+            var xhr = new XMLHttpRequest();
+            var xhr_img = new XMLHttpRequest();
+
+			init();
+			//animate();
+            render();
+            
+			function init() {
+
+				container = document.getElementById( 'container' );
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0xf0f0f0 );
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
+				//camera.position.set( 0, 125, 500 );
+                camera.position.set(-340, 210, 215 );
+				scene.add( camera );
+
+				scene.add( new THREE.AmbientLight( 0x7f7f7f) );
+				var light = new THREE.SpotLight( 0xffffff, 0.5 );
+				light.position.set( 0, 1500, 200 );
+				light.angle = Math.PI * 0.2;
+				light.castShadow = true;
+				light.shadow.camera.near = 200;
+				light.shadow.camera.far = 2000;
+				light.shadow.bias = - 0.000222;
+				light.shadow.mapSize.width = 1024;
+				light.shadow.mapSize.height = 1024;
+				scene.add( light );
+
+				var planeGeometry = new THREE.PlaneBufferGeometry( 2000, 2000 );
+				planeGeometry.rotateX( - Math.PI / 2 );
+				var planeMaterial = new THREE.ShadowMaterial( { opacity: 0.2 } );
+
+				var plane = new THREE.Mesh( planeGeometry, planeMaterial );
+				plane.position.y = - 200;
+				plane.receiveShadow = true;
+				scene.add( plane );
+
+				var helper = new THREE.GridHelper( 2000, 100 );
+				helper.position.y = - 199;
+				helper.material.opacity = 0.25;
+				helper.material.transparent = true;
+				scene.add( helper );
+
+				var axes = new THREE.AxesHelper( 1000 );
+				//axes.position.set( - 500, - 500, - 500 );
+				scene.add( axes );
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.shadowMap.enabled = true;
+				container.appendChild( renderer.domElement );
+
+				//stats = new Stats();
+				//container.appendChild( stats.dom );
+
+				var gui = new GUI();
+				//gui.add( params, 'uniform' );
+				//gui.add( params, 'tension', 0, 1 ).step( 0.01 ).onChange( function ( value ) {
+				//	splines.uniform.tension = value;
+				//	updateSplineOutline();
+                //} );
+				//gui.add( params, 'centripetal' );
+				//gui.add( params, 'chordal' );
+				//gui.add( params, 'addPoint' );
+				//gui.add( params, 'removePoint' );
+				//gui.add( params, 'exportSpline' );
+                gui.add( params, 'exportFeature' );
+                gui.add( params, 'loadFeature' );
+                gui.add( params, 'gamma', 0, 0.2).step( 0.005 );
+                gui.add( params, 'beta', 0 );
+                gui.add( params, 'getData' );
+                gui.add( params, 'toggleScale' ).onChange( function ( value ) {
+					if (value) {
+                        transformControl.setMode('scale');
+                    } else {
+                        transformControl.setMode('translate');
+                    }
+                } );
+				gui.open();
+
+				// Controls
+				var controls = new OrbitControls( camera, renderer.domElement );
+				controls.damping = 0.2;
+				controls.addEventListener( 'change', render );
+
+				controls.addEventListener( 'start', function () {
+
+					cancelHideTransform();
+
+				} );
+
+				controls.addEventListener( 'end', function () {
+                    //console.log(camera.position);
+					delayHideTransform();
+
+				} );
+
+				transformControl = new TransformControls( camera, renderer.domElement );
+				transformControl.addEventListener( 'change', render );
+				transformControl.addEventListener( 'dragging-changed', function ( event ) {
+
+					controls.enabled = ! event.value;
+
+                } );
+				scene.add( transformControl );
+                
+				// Hiding transform situation is a little in a mess :()
+				transformControl.addEventListener( 'change', function () {
+					cancelHideTransform();
+				} );
+
+				transformControl.addEventListener( 'mouseDown', function () {
+                    if (transformControl.getMode() == 'scale') {
+                        transformControl.axis = 'XYZ';
+                    }
+					cancelHideTransform();
+
+				} );
+
+				transformControl.addEventListener( 'mouseUp', function () {
+
+					delayHideTransform();
+                    ajax_poll_img();
+				} );
+
+				transformControl.addEventListener( 'objectChange', function () {
+					//updateSplineOutline();
+                    pushData();
+
+				} );
+
+				var dragcontrols = new DragControls( splineHelperObjects, camera, renderer.domElement ); //
+				dragcontrols.enabled = false;
+				//dragcontrols.addEventListener( 'hoveron', function ( event ) {
+                //    // Avoid losing focus to other objects
+                //    if (!transformControl.dragging) {
+                //        transformControl.attach( event.object );
+                //    }
+                //    cancelHideTransform();
+				//} );
+                
+                dragcontrols.addEventListener( 'dragstart', function ( event ) {
+                    // Avoid losing focus to other objects
+                    if (!transformControl.dragging) {
+                        resetColors();
+                        event.object.material.color.setHex(0x0095ff);
+                        event.object.material.needsUpdate = true;
+                        transformControl.attach( event.object );
+                    }
+                    cancelHideTransform();
+
+				} );
+                
+				dragcontrols.addEventListener( 'hoveroff', function () {
+
+					delayHideTransform();
+
+				} );
+
+				var hiding;
+
+				function delayHideTransform() {
+
+					cancelHideTransform();
+					hideTransform();
+
+				}
+
+				function hideTransform() {
+
+					hiding = setTimeout( function () {
+
+						transformControl.detach( transformControl.object );
+                        resetColors();
+                        render();
+					}, 2500 );
+
+				}
+
+				function cancelHideTransform() {
+
+					if ( hiding ) clearTimeout( hiding );
+
+				}
+
+				/*******
+				 * Curves
+				 *********/
+
+				for ( var i = 0; i < splinePointsLength; i ++ ) {
+
+					addSplineObject( positions[ i ] );
+
+				}
+
+				positions = [];
+                scales = [];
+
+				for ( var i = 0; i < splinePointsLength; i ++ ) {
+
+					positions.push( splineHelperObjects[ i ].position );
+                    scales.push( splineHelperObjects[ i ].scale );
+
+				}
+
+                
+                getData();
+                
+				//load( [ new THREE.Vector3( 289.76843686945404, 452.51481137238443, 56.10018915737797 ),
+				//	new THREE.Vector3( - 53.56300074753207, 171.49711742836848, - 14.495472686253045 ),
+				//	new THREE.Vector3( - 91.40118730204415, 176.4306956436485, - 6.958271935582161 ),
+				//	new THREE.Vector3( - 383.785318791128, 491.1365363371675, 47.869296953772746 ) ] );
+                
+                window.addEventListener( 'resize', onWindowResize, false );
+			}
+            
+            function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+                render();
+			}
+            
+            function resetColors() {
+                // Reset the color of all the primitives
+                for ( var i = 0; i < splinePointsLength; i ++ ) {
+                    splineHelperObjects[ i ].material.color.setHex(0xffe5cc);
+                    splineHelperObjects[ i ].material.needsUpdate = true;
+                }
+            }
+            
+			function addSplineObject( position ) {
+
+				//var material = new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } );
+                var material = new THREE.MeshLambertMaterial( { color: 0xffe5cc } );
+				var object = new THREE.Mesh( geometry, material );
+
+				if ( position ) {
+
+					object.position.copy( position );
+
+				} else {
+
+					object.position.x = Math.random() * 1000 - 500;
+					object.position.y = Math.random() * 600;
+					object.position.z = Math.random() * 800 - 400;
+
+				}
+
+				object.castShadow = true;
+				object.receiveShadow = false;
+				scene.add( object );
+				splineHelperObjects.push( object );
+				return object;
+
+			}
+
+			function addPoint() {
+
+				splinePointsLength ++;
+                var newobj = addSplineObject();
+				positions.push( newobj.position );
+                scales.push( newobj.scale );
+				//updateSplineOutline();
+
+			}
+
+			function removePoint() {
+
+				if ( splinePointsLength <= 4 ) {
+
+					return;
+
+				}
+				splinePointsLength --;
+				positions.pop();
+                scales.pop();
+				scene.remove( splineHelperObjects.pop() );
+
+				//updateSplineOutline();
+
+			}
+
+			function exportSpline() {
+
+				var strplace = [];
+
+				for ( var i = 0; i < splinePointsLength; i ++ ) {
+
+					var p = splineHelperObjects[ i ].position;
+					strplace.push( 'new THREE.Vector3({0}, {1}, {2})'.format( p.x, p.y, p.z ) );
+
+				}
+
+				console.log( strplace.join( ',\n' ) );
+				var code = '[' + ( strplace.join( ',\n\t' ) ) + ']';
+				prompt( 'copy and paste code', code );
+
+			}
+            
+            function exportFeature() {
+
+				var strplace = [];
+
+                //console.log(metadata.feature)
+				for ( var i = 0; i < metadata.feature[0].length; i ++ ) {
+					strplace.push( metadata.feature[0][i].toPrecision(6) );
+				}
+                
+				var code = '[' + ( strplace.join( ', ' ) ) + ']';
+				prompt( 'Copy your feature:', code );
+
+			}
+            
+            function loadFeature() {
+                var feat_text = prompt( 'Paste your feature:' );
+                if (feat_text == null) {
+                    return;
+                }
+                var feat_arr = JSON.parse(feat_text);
+                console.log(feat_arr);
+                
+                var ser = JSON.stringify({feature: [feat_arr]});
+                ajax_send('/get_attributes', ser);
+                ajax_poll_img();
+			}
+            
+            function pushData() {
+                //JSON.stringify({modified_attrs: pos})
+                var new_pos = [];
+                for ( var i = 0; i < splinePointsLength; i ++ ) {
+					var p = splineHelperObjects[ i ].position;
+                    p = p.clone().divideScalar(150);
+                    var s = splineHelperObjects[ i ].scale;
+                    s = s.clone().divideScalar(150);
+                    new_pos.push([s.toArray()[0]].concat(p.toArray()));
+				}
+                //console.log(metadata)
+                var ser = JSON.stringify(Object.assign({}, {modified_attrs: new_pos, gamma: params.gamma, beta: params.beta}, metadata));
+                //console.log(ser);
+                ajax_send('/update_attributes', ser);
+                //ajax_poll_img();
+            }
+            
+            function getData() {
+                // Pull data from server
+                console.log('Pulling data from server');
+                ajax_send('/get_attributes', '{}');
+                ajax_poll_img();
+            }
+            
+			function load( new_positions , new_scales) {
+
+				while ( new_positions.length > positions.length ) {
+
+					addPoint();
+
+				}
+
+				while ( new_positions.length < positions.length ) {
+
+					removePoint();
+
+				}
+
+				for ( var i = 0; i < positions.length; i ++ ) {
+
+					positions[ i ].copy( new_positions[ i ] );
+                    scales[i].copy( new_scales[i]);
+
+				}
+
+				//updateSplineOutline();
+                render();
+
+			}
+
+			//function animate() {
+			//	requestAnimationFrame( animate );
+			//	render();
+			//	//stats.update();
+			//}
+
+			function render() {
+
+				//splines.uniform.mesh.visible = params.uniform;
+				//splines.centripetal.mesh.visible = params.centripetal;
+				//splines.chordal.mesh.visible = params.chordal;
+				renderer.render( scene, camera );
+                //stats.update();
+
+			}
+            
+            function ajax_poll_img(url="/get_highres") {
+                xhr_img.open("POST", url, true);
+                xhr_img.onload = ajax_longpoll_img_cb;
+                xhr_img.send(JSON.stringify({feature: metadata.feature}));
+            }
+            function ajax_longpoll_img_cb() {
+                var response_data = JSON.parse(this.responseText);
+                var img_png_b64 = response_data.highres_png;
+                //console.log(response_data);
+                //console.log(img_png_b64);
+                document.getElementById("highres_img").src = img_png_b64;
+            }
+            
+            function ajax_send(url, data) {
+                xhr.open("POST", url, false);
+                xhr.onload = ajax_respond;
+                xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+                xhr.send(data);
+            }
+            
+            function ajax_respond() {
+                //console.log(this.responseText);
+                var response_data = JSON.parse(this.responseText);
+                var attrs = response_data.attrs;
+                //console.log(response_data);
+                var new_positions = [];
+                var new_scales = [];
+                var scale = 150;
+                for ( var i = 0; i < attrs.length; i ++ ) {
+					new_positions.push(new THREE.Vector3( attrs[i][1]*scale, attrs[i][2]*scale, attrs[i][3]*scale ));
+                    new_scales.push(new THREE.Vector3( attrs[i][0]*scale, attrs[i][0]*scale, attrs[i][0]*scale ));
+				}
+                load(new_positions, new_scales);
+                metadata = response_data
+                var kld = response_data.kld;
+                document.getElementById("kld").innerHTML = kld;
+            }
+		</script>
+
+	</body>
+</html>
