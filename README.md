@@ -114,11 +114,11 @@ data:
     ...
     cate_id: "02691156"
     split_files:
-        train: ./datasets/splits/sv2_planes_all.json
-        test: ./datasets/splits/sv2_planes_all.json
+        train: ./datasets/splits/sv2_planes_all.json # Replace with your training split file
+        test: ./datasets/splits/sv2_planes_all.json # Replace with your testing split file
     sdf_data_dir:
-        surface: /mnt/data3/ShapeNet_sdf_even/02691156_surface
-        sphere: /mnt/data3/ShapeNet_sdf_even/02691156_sphere
+        surface: /mnt/data3/ShapeNet_sdf_even/02691156_surface # Replace with your path
+        sphere: /mnt/data3/ShapeNet_sdf_even/02691156_sphere # Replace with your path
     ...
 ...
 ```
