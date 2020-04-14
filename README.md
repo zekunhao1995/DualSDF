@@ -13,6 +13,20 @@ by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
 
 [![DualSDF Demo](dualsdf_demo_snap.png)](http://35.202.137.6:8080/)  
 
+
+## Citing DualSDF
+
+If you find our code useful, please consider citing our paper:
+
+```
+@article{zekun2020dualsdf,
+ title={DualSDF: Semantic Shape Manipulation using a Two-Level Representation},
+ author={Hao, Zekun and Averbuch-Elor, Hadar and Snavely, Noah and Belongie, Serge},
+ journal={arXiv},
+ year={2020}
+}
+```
+
 ## Running the live demo locally
 We provide pretrained models for chair and airplane categories. Following [Park et al.](https://github.com/facebookresearch/DeepSDF), each model is trained on a subset of shapes from the corresponding [ShapeNet](https://www.shapenet.org/) category.
 
@@ -96,16 +110,3 @@ CUDA_VISIBLE_DEVICES=2 python3.6 train.py ./config/dualsdf_airplanes_demo.yaml -
 ```
 The rendered images of both primitive-based representation and high-resolution representation will appear under the `logs/special_render_known_shapes_dualsdf_airplanes_demo_<datetime>` directory. Many options related to rendering can be modified in the config file.
 
-
-## Citing DualSDF
-
-If you find our code useful, please consider citing our paper:
-
-```
-@article{zekun2020dualsdf,
- title={DualSDF: Semantic Shape Manipulation using a Two-Level Representation},
- author={Hao, Zekun and Averbuch-Elor, Hadar and Snavely, Noah and Belongie, Serge},
- journal={arXiv},
- year={2020}
-}
-```
