@@ -28,7 +28,7 @@ If you find our code useful, please consider citing our paper:
 ```
 
 ## Running the live demo locally
-We provide pretrained models for chair and airplane categories. Following [Park et al.](https://github.com/facebookresearch/DeepSDF), each model is trained on a subset of shapes from the corresponding [ShapeNet](https://www.shapenet.org/) category.
+We provide pretrained models for chair and airplane categories. Each model is trained on a subset of shapes from the corresponding [ShapeNet](https://www.shapenet.org/) category. The lists of shapes can be found under `datasets/splits`, which are taken from [DeepSDF](https://github.com/facebookresearch/DeepSDF).
 
 ```bash
 # Host the chair demo on port 1234 (default port) using GPU 0
@@ -42,25 +42,50 @@ CUDA_VISIBLE_DEVICES=1 python3.6 demo.py ./config/dualsdf_airplanes_demo.yaml --
 ```
 
 ## Training DualSDF from scratch
+
 ### Data preparation
 
-#### Download ShapeNetCore v2 dataset
+#### Using pre-sampled SDF dataset
+
+We provide pre-sampled SDF dataset for ShapeNet chairs and airplanes [link comming soon]. They are in SquashFS format so that you can mount it directly in Linux without extraction.
+
+To mount a SquashFS file with `squashfuse`:
+```bash
+squashfuse <path_to_sqfs_file> <path_to_mount_point>
+```
+
+Alternatively, with `mount`:
+```bash
+mount <path_to_sqfs_file> <path_to_mount_point> -t squashfs -o loop
+```
+
+Alternatively, extract a SquashFS file:
+```bash
+unsquashfs -f -d <destination_path> <path_to_sqfs_file>
+```
+
+#### (Optional) Sample SDF yourself using the provided code
+
+Use the following instructions if you want to sample your own SDF dataset.
+
+##### Download ShapeNetCore v2 dataset
 
 [ShapeNet website](https://www.shapenet.org/)
 
-#### Convert ShapeNet meshes to numpy npy files
+##### Convert ShapeNet meshes to numpy npy files
 
-For ease of process, we convert all the meshes to numpy arrays before sampling SDFs.
+For ease of process, we convert meshes to numpy arrays before sampling SDFs.
 
-[Tools](https://www.shapenet.org/tools) are widely available to load ShapeNet obj files. Each npy file should contain a float32 array with a shape of `#triangles x 3 (vertices) x 3 (xyz coordinate of each vertex)`, representing a triangle mesh.
+[Tools](https://www.shapenet.org/tools) are widely available to load ShapeNet obj files. Each npy file should contain a float32 array with a shape of `#triangles x 3 (vertices) x 3 (xyz coordinate of each vertex)`, representing a triangle mesh. The scale and center of the mesh is not important, as it will be normalized to a unit sphere right before sampling SDFs.
 
 The naming convention is as follows:
 ```
 <category id>/
     <shape_id>.npy
 ```
+Other shape datasets (i.e. [ABC Dataset](https://deep-geometry.github.io/abc-dataset/), [ModelNet](https://modelnet.cs.princeton.edu/), [PartNet](https://cs.stanford.edu/~kaichun/partnet/)) can be used instead of ShapeNet, as long as they are also converted to npy format and the npy files are stored using the naming convention above.
 
-#### Sample signed distance fields from meshes
+##### Sample signed distance fields from meshes
 
 Compile the CUDA kernel for computing SDF:  
 ```bash
@@ -72,7 +97,7 @@ Sample SDFs using the provided script:
 ```bash
 python3.6 sample_sdfs.py <path_to_mesh_npy_folder> <path_to_save_sampled_results>
 ```
-The results should look like this:
+This is what the result directory should look like:
 ```
 <path_to_save_sampled_results>/
     <shape_id>_sphere/
@@ -83,7 +108,7 @@ The results should look like this:
 
 ### Training
 #### Creating a config file
-It is a good idea to start with an existing config file (i.e. `config/dualsdf_airplanes_demo.yaml`). Edit the `data` section to reflex your dataset configuration. You will need to make new split files for new datasets.
+It is a good idea to start with an existing config file (i.e. `config/dualsdf_airplanes_demo.yaml`). Edit the `data` section to reflex your dataset configuration. You will need to build and specify your own `split_files` for new datasets. It is generally a good idea to exclude shapes with large non-manifold regions, as they cannot be represented well with SDFs.
 ```
 data:
     ...
