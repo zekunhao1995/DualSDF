@@ -47,7 +47,7 @@ CUDA_VISIBLE_DEVICES=1 python3.6 demo.py ./config/dualsdf_airplanes_demo.yaml --
 
 #### Using pre-sampled SDF dataset
 
-We provide pre-sampled SDF dataset for ShapeNet chairs and airplanes [Google Drive](https://drive.google.com/drive/folders/14ZCfbQCSItmw6M_3EgbguUOy9kpkZQNU?usp=sharing). They are in SquashFS format so that you can mount it directly in Linux without extraction.
+We provide pre-sampled SDF dataset for ShapeNet chairs and airplanes on [Google Drive](https://drive.google.com/drive/folders/14ZCfbQCSItmw6M_3EgbguUOy9kpkZQNU?usp=sharing). They are in SquashFS format so that you can mount it directly in Linux without extraction.
 
 To mount a SquashFS file with `squashfuse`:
 ```bash
