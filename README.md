@@ -8,6 +8,27 @@ by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
 [[Paper]](https://arxiv.org/pdf/2004.02869.pdf) 
 [[Website]](http://www.cs.cornell.edu/~hadarelor/dualsdf/)
 
+<table>
+    <tbody>
+        <tr>
+            <td>Adjust the wheelbase of a car by changing the distance between two spheres</td>
+            <td rowspan=3>
+                <p align="center">
+                    <img width="384" src="teaser.gif">
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>Adjust the fuselage diameter of an airplane by changing the diameter of a sphere</td>
+        </tr>
+        <tr>
+            <td>Adjust the height of a chair by moving a single sphere on the leg</td>
+        </tr>
+    </tbody>
+</table>
+
+
+
 ## Live demo
 [[Demo-Chair]](http://35.202.137.6:8080/) [[Demo-Airplane]](http://35.202.137.6:8081/)
 
