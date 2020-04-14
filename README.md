@@ -66,7 +66,8 @@ unsquashfs -f -d <destination_path> <path_to_sqfs_file>
 Our SDF dataset contains SDF samples from all the shapes in the ShapeNetCore v2 chair and airplane categories. Each shape is normalized to be within a unit sphere prior to sampling.
 
 There are two directories for each shape category:
-- `<category_id>_sphere` contains sdf values sampled uniformly within the unit sphere. There are 250000 samples for each shape.   - `<category_id>_surface` contains sdf values sampled near the surface. There are at least 500000 samples for each shape. The first half of them are inside the shape (negative sign) while the second half of them are outside (positive sign).
+- `<category_id>_sphere` contains sdf values sampled uniformly within the unit sphere. There are 250000 samples for each shape.
+- `<category_id>_surface` contains sdf values sampled near the surface. There are at least 500000 samples for each shape. The first half of them are inside the shape (negative sign) while the second half of them are outside (positive sign).
 
 SDF samples are stored as N-by-4 numpy arrays and saved as individual npy files `<shape_id>.npy` given N samples and each sample takes the form of (x, y, z, d).
 
