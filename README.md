@@ -14,6 +14,7 @@ by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
 <p float="left">
     <img src="dualsdf_demo_snap.png"/>
 </p>
+[![DualSDF Demo](dualsdf_demo_snap.png)](http://35.202.137.6:8080/)
 
 ## Running the live demo locally
 We provide pretrained models for chair and airplane categories. Following [Park et al.](https://github.com/facebookresearch/DeepSDF), each model is trained on a subset of shapes from the corresponding [ShapeNet](https://www.shapenet.org/) category.
