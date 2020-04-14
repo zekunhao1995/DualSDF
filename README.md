@@ -94,7 +94,7 @@ To render shape reconstruction results on the training set, run the following co
 ```bash
 CUDA_VISIBLE_DEVICES=2 python3.6 train.py ./config/dualsdf_airplanes_demo.yaml --resume --pretrained ./pretrained/dualsdf_airplanes_demo/epoch_2799.pth --special render_known_shapes
 ```
-The rendered results will appear under `logs` directory.
+The rendered results of both primitive-based representation and high-resolution representation will appear under the `logs/special_render_known_shapes_dualsdf_airplanes_demo_<datetime>` directory.
 
 
 ## Citing DualSDF
