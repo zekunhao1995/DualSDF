@@ -13,6 +13,7 @@ by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
 
 [![DualSDF Demo](dualsdf_demo_snap.png)](http://35.202.137.6:8080/)  
 
+The WebGL demo is largely based on [three.js examples](https://threejs.org/examples/).
 
 ## Citing DualSDF
 
