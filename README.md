@@ -62,6 +62,15 @@ Alternatively, extract a SquashFS file:
 unsquashfs -f -d <destination_path> <path_to_sqfs_file>
 ```
 
+#### Dataset overview
+Our SDF dataset contains SDF samples from all the shapes in the ShapeNetCore v2 chair and airplane categories. Each shape is normalized to be within a unit sphere prior to sampling.
+
+There are two directories for each shape category:
+- `<category_id>_sphere` contains sdf values sampled uniformly within the unit sphere. There are 250000 samples for each shape. - `<category_id>_surface` contains sdf values sampled near the surface. There are at least 500000 samples for each shape. The first half of them are inside the shape (negative sign) while the second half of them are outside (positive sign).
+
+SDF samples are stored as N-by-4 numpy arrays and saved as individual npy files `<shape_id>.npy` given N samples and each sample take the form of (x, y, z, d).
+
+
 ### (Optional) Sample SDF yourself using the provided code
 
 Use the following instructions if you want to sample your own SDF dataset.
@@ -78,7 +87,7 @@ For ease of process, we convert meshes to numpy arrays before sampling SDFs.
 
 The naming convention is as follows:
 ```
-<category id>/
+<category_id>/
     <shape_id>.npy
 ```
 Other shape datasets (i.e. [ABC Dataset](https://deep-geometry.github.io/abc-dataset/), [ModelNet](https://modelnet.cs.princeton.edu/), [PartNet](https://cs.stanford.edu/~kaichun/partnet/)) can be used instead of ShapeNet, as long as they are also converted to npy format and the npy files are stored using the naming convention above.
@@ -98,9 +107,9 @@ python3.6 sample_sdfs.py <path_to_mesh_npy_folder> <path_to_save_sampled_results
 This is what the result directory should look like:
 ```
 <path_to_save_sampled_results>/
-    <shape_id>_sphere/
+    <category_id>_sphere/
         <shape_id>.npy
-    <shape_id>_surface/
+    <category_id>_surface/
         <shape_id>.npy
 ```
 
@@ -110,7 +119,7 @@ It is a good idea to start with an existing config file (i.e. `config/dualsdf_ai
 ```
 data:
     ...
-    cate_id: "02691156"
+    cate_id: "02691156" # Replace with your category id
     split_files:
         train: ./datasets/splits/sv2_planes_all.json # Replace with your training split file
         test: ./datasets/splits/sv2_planes_all.json # Replace with your testing split file
