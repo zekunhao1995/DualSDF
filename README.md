@@ -43,9 +43,7 @@ CUDA_VISIBLE_DEVICES=1 python3.6 demo.py ./config/dualsdf_airplanes_demo.yaml --
 
 ## Training DualSDF from scratch
 
-### Data preparation
-
-#### Using pre-sampled SDF dataset
+### Download pre-sampled SDF dataset
 
 We provide pre-sampled SDF dataset for ShapeNet chairs and airplanes on [Google Drive](https://drive.google.com/drive/folders/14ZCfbQCSItmw6M_3EgbguUOy9kpkZQNU?usp=sharing). They are in SquashFS format so that you can mount it directly in Linux without extraction.
 
@@ -64,15 +62,15 @@ Alternatively, extract a SquashFS file:
 unsquashfs -f -d <destination_path> <path_to_sqfs_file>
 ```
 
-#### (Optional) Sample SDF yourself using the provided code
+### (Optional) Sample SDF yourself using the provided code
 
 Use the following instructions if you want to sample your own SDF dataset.
 
-##### Download ShapeNetCore v2 dataset
+#### Download ShapeNetCore v2 dataset
 
 [ShapeNet website](https://www.shapenet.org/)
 
-##### Convert ShapeNet meshes to numpy npy files
+#### Convert ShapeNet meshes to numpy npy files
 
 For ease of process, we convert meshes to numpy arrays before sampling SDFs.
 
@@ -85,7 +83,7 @@ The naming convention is as follows:
 ```
 Other shape datasets (i.e. [ABC Dataset](https://deep-geometry.github.io/abc-dataset/), [ModelNet](https://modelnet.cs.princeton.edu/), [PartNet](https://cs.stanford.edu/~kaichun/partnet/)) can be used instead of ShapeNet, as long as they are also converted to npy format and the npy files are stored using the naming convention above.
 
-##### Sample signed distance fields from meshes
+#### Sample signed distance fields from meshes
 
 Compile the CUDA kernel for computing SDF:  
 ```bash
