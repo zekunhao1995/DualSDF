@@ -6,7 +6,7 @@ This repo contains an implimentation of the CVPR 2020 paper:
 by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.  
 
 [[Paper]](https://arxiv.org/pdf/2004.02869.pdf) 
-[[Website]](http://www.cs.cornell.edu/~hadarelor/dualsdf/) [[Demo]](http://35.202.137.6:8080/)
+[[Website]](http://www.cs.cornell.edu/~hadarelor/dualsdf/) [[Demo-Chair]](http://35.202.137.6:8080/) [[Demo-Airplane]](http://35.202.137.6:8081/)
 
 ## Citing DualSDF
 
@@ -22,7 +22,7 @@ If you find our code useful, please consider citing our paper:
 ```
 
 ## Live demo
-[[Demo]](http://35.202.137.6:8080/)
+[[Demo-Chair]](http://35.202.137.6:8080/) [[Demo-Airplane]](http://35.202.137.6:8081/)
 
 <p float="left">
     <img src="dualsdf_demo_snap.png"/>
