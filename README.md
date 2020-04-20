@@ -1,11 +1,11 @@
 # DualSDF
 
-This repo contains an implimentation of the CVPR 2020 paper:  
+This repo contains an implementation of the CVPR 2020 paper:  
 
 **DualSDF: Semantic Shape Manipulation using a Two-Level Representation**,  
 by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.  
 
-[[Paper]](https://arxiv.org/pdf/2004.02869.pdf) 
+[[Paper]](https://arxiv.org/pdf/2004.02869.pdf)
 [[Website]](http://www.cs.cornell.edu/~hadarelor/dualsdf/)
 
 <table>
@@ -165,4 +165,3 @@ python3.6 train.py ./config/dualsdf_airplanes_demo.yaml --resume --pretrained ./
 ```
 The rendered images of both primitive-based representation and high-resolution representation will appear under the `logs/special_render_known_shapes_dualsdf_airplanes_demo_<datetime>` directory.   
 A comprehensive set of options related to rendering, such as resolution, color scheme, etc. can be modified in the config file.
-
