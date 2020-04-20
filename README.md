@@ -11,7 +11,7 @@ by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
 <table>
     <tbody>
         <tr>
-            <td>Adjust the wheelbase of a car by changing the distance between two spheres</td>
+            <td>Adjust the wheelbase of the car by changing the distance between the two selected spheres</td>
             <td rowspan=3>
                 <p align="center">
                     <img width="384" src="teaser.gif">
@@ -19,10 +19,10 @@ by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
             </td>
         </tr>
         <tr>
-            <td>Adjust the fuselage diameter of an airplane by changing the diameter of a sphere</td>
+            <td>Adjust the fuselage diameter of the airplane by changing the diameter of the selected sphere</td>
         </tr>
         <tr>
-            <td>Adjust the height of a chair by moving a single sphere on the leg</td>
+            <td>Adjust the height of the chair by moving the selected sphere located on one of the legs</td>
         </tr>
     </tbody>
 </table>
@@ -50,7 +50,7 @@ If you find our code useful, please consider citing our paper:
 ```
 
 ## Running the live demo locally
-We provide pretrained models for chair and airplane categories. Each model is trained on a subset of shapes from the corresponding [ShapeNet](https://www.shapenet.org/) category. The lists of shapes can be found under `datasets/splits`, which are taken from [DeepSDF](https://github.com/facebookresearch/DeepSDF).
+We provide pretrained models for the chair and airplane categories. Each model is trained on a subset of shapes from the corresponding [ShapeNet](https://www.shapenet.org/) category. The list of shapes can be found under `datasets/splits`, which are taken from [DeepSDF](https://github.com/facebookresearch/DeepSDF).
 
 ```bash
 # Host the chair demo on port 1234 (default port) using GPU 0
@@ -91,7 +91,7 @@ There are two directories for each shape category:
 - `<category_id>_sphere` contains sdf values sampled uniformly within the unit sphere. There are 250000 samples for each shape.
 - `<category_id>_surface` contains sdf values sampled near the surface. There are at least 500000 samples for each shape. The first half of them are inside the shape (negative sign) while the second half of them are outside (positive sign).
 
-SDF samples are stored as N-by-4 numpy arrays and saved as individual npy files `<shape_id>.npy` given N samples and each sample takes the form of (x, y, z, d).
+SDF samples are stored as N-by-4 numpy arrays and saved as individual npy files `<shape_id>.npy`. N samples are given and each sample takes the form of (x, y, z, d).
 
 
 ### (Optional) Sample SDF yourself using the provided code
@@ -113,7 +113,7 @@ The naming convention is as follows:
 <category_id>/
     <shape_id>.npy
 ```
-Other shape datasets (i.e. [ABC Dataset](https://deep-geometry.github.io/abc-dataset/), [ModelNet](https://modelnet.cs.princeton.edu/), [PartNet](https://cs.stanford.edu/~kaichun/partnet/)) can be used instead of ShapeNet, as long as they are also converted to npy format and the npy files are stored using the naming convention above.
+Other shape datasets (i.e. [ABC Dataset](https://deep-geometry.github.io/abc-dataset/), [ModelNet](https://modelnet.cs.princeton.edu/), [PartNet](https://cs.stanford.edu/~kaichun/partnet/)) can be used instead of ShapeNet, as long as they are also converted to npy format and the npy files are stored using the naming convention described above.
 
 #### Sample signed distance fields from meshes
 
