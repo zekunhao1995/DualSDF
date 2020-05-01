@@ -166,5 +166,5 @@ python3.6 train.py ./config/dualsdf_airplanes_demo.yaml --resume --pretrained ./
 The rendered images of both primitive-based representation and high-resolution representation will appear under the `logs/special_render_known_shapes_dualsdf_airplanes_demo_<datetime>` directory.   
 A comprehensive set of options related to rendering, such as resolution, color scheme, etc. can be modified in the config file.
 
-#### Licence
+## Licence
 MIT License
