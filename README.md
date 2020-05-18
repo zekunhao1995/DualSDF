@@ -166,5 +166,10 @@ python3.6 train.py ./config/dualsdf_airplanes_demo.yaml --resume --pretrained ./
 The rendered images of both primitive-based representation and high-resolution representation will appear under the `logs/special_render_known_shapes_dualsdf_airplanes_demo_<datetime>` directory.   
 A comprehensive set of options related to rendering, such as resolution, color scheme, etc. can be modified in the config file.
 
+## Requirements
+The code was developed under Python 3.6 and Pytorch 1.4. Other dependencies are:
+ - `opencv-python` (Only for running the demo)
+ - `tensorboardX` (Only for training)
+
 ## Licence
 MIT License
