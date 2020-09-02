@@ -41,11 +41,11 @@ The WebGL demo is largely based on [three.js examples](https://threejs.org/examp
 If you find our code useful, please consider citing our paper:
 
 ```
-@article{zekun2020dualsdf,
- title={DualSDF: Semantic Shape Manipulation using a Two-Level Representation},
- author={Hao, Zekun and Averbuch-Elor, Hadar and Snavely, Noah and Belongie, Serge},
- journal={arXiv},
- year={2020}
+@inproceedings{hao2020dualsdf,
+  title={DualSDF: Semantic Shape Manipulation using a Two-Level Representation},
+  author={Hao, Zekun and Averbuch-Elor, Hadar and Snavely, Noah and Belongie, Serge},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  year={2020}
 }
 ```
 
