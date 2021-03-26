@@ -30,7 +30,7 @@ by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
 
 
 ## Live demo
-[[Demo-Chair]](http://35.202.137.6:8080/) [[Demo-Airplane]](http://35.202.137.6:8081/)
+[[Demo-Chair]](http://35.202.137.6:8080/) [[Demo-Airplane]](http://35.202.137.6:8081/) (2021/03/25: Online demo is back again!)
 
 [![DualSDF Demo](dualsdf_demo_snap.png)](http://35.202.137.6:8080/)  
 
