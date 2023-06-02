@@ -6,7 +6,7 @@ This repo contains an implementation of the CVPR 2020 paper:
 by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.  
 
 [[Paper]](https://arxiv.org/pdf/2004.02869.pdf)
-[[Website]](http://www.cs.cornell.edu/~hadarelor/dualsdf/)
+[[Website]](http://www.cs.cornell.edu/projects/dualsdf/)
 
 <table>
     <tbody>
@@ -29,10 +29,9 @@ by **Zekun Hao**, **Hadar Averbuch-Elor**, **Noah Snavely**, **Serge Belongie**.
 
 
 
-## Live demo
-[[Demo-Chair]](http://35.202.137.6:8080/) [[Demo-Airplane]](http://35.202.137.6:8081/) (2021/03/25: Online demo is back again!)
+## Web GUI
 
-[![DualSDF Demo](dualsdf_demo_snap.png)](http://35.202.137.6:8080/)  
+![DualSDF Demo](dualsdf_demo_snap.png)
 
 The WebGL demo is largely based on [three.js examples](https://threejs.org/examples/).
 
